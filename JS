@@ -1,0 +1,39 @@
+function exportToExcel() {
+    const table = document.querySelector('.list');
+    const rows = table.querySelectorAll('tbody tr');
+    const csvContent = [];
+
+    // Obtém o cabeçalho da tabela
+    const header = [];
+    table.querySelectorAll('thead th').forEach(th => {
+        header.push(th.textContent);
+    });
+    csvContent.push(header.join(','));
+
+    // Obtém os dados das linhas da tabela
+    rows.forEach(row => {
+        const dataCells = row.querySelectorAll('td');
+        const rowData = [];
+        dataCells.forEach(cell => {
+            rowData.push('"' + cell.textContent + '"');
+        });
+        csvContent.push(rowData.join(','));
+    });
+
+    // Cria um objeto Blob a partir dos dados CSV
+    const csvBlob = new Blob([csvContent.join('\n')], { type: 'text/csv' });
+    const blobUrl = URL.createObjectURL(csvBlob);
+
+    // Cria um link para download do arquivo
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = 'exported_data.csv';
+    a.style.display = 'none';
+
+    // Adiciona o link ao documento e simula o clique para iniciar o download
+    document.body.appendChild(a);
+    a.click();
+
+    // Remove o link após o download
+    document.body.removeChild(a);
+}
